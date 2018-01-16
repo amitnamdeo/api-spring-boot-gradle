@@ -1,7 +1,4 @@
 api-spring-boot-gradle.iml
-gradle/
-gradlew
-gradlew.bat
 .idea/
 .gradle/
 out/
