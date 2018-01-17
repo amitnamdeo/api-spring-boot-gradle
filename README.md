@@ -11,3 +11,8 @@ OR after  build
 
 2. To test api
     http://localhost:8080/greeting
+
+3. To build all
+    ./gradlew clean build jacocoTestReport sonarqube  -Dsonar.host.url=http://azu-jenkins01:9000 -Dsonar.login=***** -Dsonar.password=*****
+    OR
+    gradle clean build jacocoTestReport sonarqube  -Dsonar.host.url=http://azu-jenkins01:9000 -Dsonar.login=***** -Dsonar.password=*****

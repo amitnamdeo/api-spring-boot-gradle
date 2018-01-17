@@ -3,6 +3,7 @@ pipeline {
     stages {
         stage('status') {
             steps {
+                // this is status step , can be removed
                 sh 'echo " --- --- --- --- --- --- --- --- --- --- "'
                 sh './gradlew properties'
                 sh 'echo " --- --- --- --- --- --- --- --- --- --- "'
@@ -29,6 +30,54 @@ pipeline {
                                     }
                             }
                     }
+            }
+            post {
+                always {
+                    // to reports test result to show on jenkins
+                    junit '**/build/*-results/test/TEST-*.xml'
+                }
+            }
+        }
+        stage('jacoco-report') {
+            steps {
+                publishHTML target: [
+                        allowMissing: false,
+                        alwaysLinkToLastBuild: false,
+                        keepAll: false,
+                        reportDir: 'build/reports/tests/test',
+                        reportFiles: 'index.html',
+                        reportName: 'JaCoCo Report',
+                        reportTitles: ''
+                    ]
+
+            }
+        }
+        stage('sonar') {
+            steps {
+                 withSonarQubeEnv('sonar-qube-jenkins') {
+                    sh './gradlew --info sonarqube'
+                 }
+            }
+            post {
+                always {
+                    // wait in seconds for sonar process to complete
+                    // for some reason waitForQualityGate was not working as expected
+                    sleep 60
+                }
+            }
+        }
+
+    // No need to occupy a node
+    stage("quality-check") {
+        steps {
+                 script {
+                        timeout(time: 10, unit: 'MINUTES') { // Just in case something goes wrong, pipeline will be killed after a timeout
+                            def qg = waitForQualityGate() // Reuse taskId previously collected by withSonarQubeEnv
+                            if (qg.status != 'OK') {
+                                    error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                                }
+                        }
+                }
             }
         }
     }
