@@ -23,7 +23,7 @@ import org.springframework.test.context.junit4.SpringRunner;
         @Autowired
         private TestRestTemplate restTemplate;
 
-        @Test
+        //@Test
         public void greetingShouldReturnDefaultMessage() throws Exception {
             assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/greeting",
                     String.class)).contains("Hello, World!");
