@@ -67,9 +67,9 @@ pipeline {
             }
         }
 
-    // No need to occupy a node
-    stage("quality-check") {
-        steps {
+        // No need to occupy a node
+        stage("quality-check") {
+            steps {
                  script {
                         timeout(time: 10, unit: 'MINUTES') { // Just in case something goes wrong, pipeline will be killed after a timeout
                             def qg = waitForQualityGate() // Reuse taskId previously collected by withSonarQubeEnv
@@ -79,6 +79,25 @@ pipeline {
                         }
                 }
             }
+            post {
+                    success {
+                          mail to:"Amit.Namdeo@footlocker.com", subject:"SUCCESS: ${currentBuild.fullDisplayName}", body: "Yay, we passed."
+                    }
+                    failure {
+                          mail to:"Amit.Namdeo@footlocker.com", subject:"FAILURE: ${currentBuild.fullDisplayName}", body: "Boo, we failed."
+                    }
+            }
+        }
+        stage("Manual Input") {
+            steps {
+                sh 'echo " Manual steps"'
+                input('OK to continue?')
+            }    
+        }
+        stage("Post Manual") {
+            steps {
+                sh 'echo "  Post Manual"'
+            }    
         }
     }
 }
