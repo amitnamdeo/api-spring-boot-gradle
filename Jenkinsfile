@@ -99,5 +99,30 @@ pipeline {
                 sh 'echo "  Post Manual"'
             }    
         }
+        stage("Docker Build") {
+            steps {
+                // build a tagged docker image and push it to a remote repository with Gradle 
+                sh './gradlew build docker'
+            }
+        }
+        /*
+        stage("Docker Run) {
+            steps {
+                sh 'docker run -p 8080:8080 -t com.amit/api-spring-boot-gradle'
+                sh 'curl -v http://localhost:8080/greeting'
+            }
+        }
+
+        stage('Push image') {
+                /* Finally, we'll push the image with two tags:
+                 * First, the incremental build number from Jenkins
+                 * Second, the 'latest' tag.
+                 * Pushing multiple tags is cheap, as all the layers are reused. */
+                docker.withRegistry('https://azu-tartifact.corp.footlocker.net', 'docker-hub-credentials') {
+                    app.push("${env.BUILD_NUMBER}")
+                    app.push("latest")
+                }
+        }
+         */
     }
 }
