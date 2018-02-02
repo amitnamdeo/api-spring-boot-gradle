@@ -99,5 +99,24 @@ pipeline {
                 sh 'echo "  Post Manual"'
             }    
         }
+        stage("Docker Build") {
+            steps {
+                // build a tagged docker image and push it to a remote repository with Gradle 
+                sh './gradlew build docker'
+            }
+        }
+
+        stage("Docker Push") {
+            steps {
+                //push the <tag> docker container to a docker repository
+               sh './gradlew build dockerPush '
+
+               // If to run and test
+               // sh 'docker run -p 8080:8080 -t com.amit/api-spring-boot-gradle'
+
+            }
+        }
+
+
     }
 }

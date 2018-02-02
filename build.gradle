@@ -7,7 +7,8 @@ buildscript {
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-	}
+        classpath('gradle.plugin.com.palantir.gradle.docker:gradle-docker:0.17.2')
+    }
 }
 
 plugins {
@@ -20,6 +21,7 @@ apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'org.sonarqube'
 apply plugin: "jacoco"
+apply plugin: 'com.palantir.docker'
 
 
 
@@ -55,4 +57,10 @@ sonarqube {
 	properties {
 		property "sonar.exclusions", "**/*SomeExcluded.java"
 	}
+}
+
+docker {
+	name "azu-tartifact.corp.footlocker.net/${project.group}/${jar.baseName}"
+	files jar.archivePath
+	buildArgs(['JAR_FILE': "${jar.archiveName}"])
 }
