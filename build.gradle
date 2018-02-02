@@ -60,7 +60,7 @@ sonarqube {
 }
 
 docker {
-	name "${project.group}/${jar.baseName}"
+	name "azu-tartifact.corp.footlocker.net/${project.group}/${jar.baseName}"
 	files jar.archivePath
 	buildArgs(['JAR_FILE': "${jar.archiveName}"])
 }
